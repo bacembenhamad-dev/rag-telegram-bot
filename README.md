@@ -99,7 +99,7 @@ The result is a friendly study assistant that never makes things up and always s
 ### 1. Clone & install
 
 ```bash
-git clone https://github.com/<your-username>/rag-telegram-bot.git
+git clone https://github.com/bacembenhamad-dev/rag-telegram-bot.git
 cd rag-telegram-bot
 pip install -r requirements.txt
 ```
