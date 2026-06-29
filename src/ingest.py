@@ -9,8 +9,8 @@ from pathlib import Path
 
 import fitz  # PyMuPDF
 from dotenv import load_dotenv
+from fastembed import TextEmbedding
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
 
@@ -59,13 +59,13 @@ def chunk_pages(pages: list[dict]) -> list[dict]:
     return chunks
 
 
-def embed_and_upsert(chunks: list[dict], client: QdrantClient, embedder: HuggingFaceEmbeddings):
+def embed_and_upsert(chunks: list[dict], client: QdrantClient, embedder: TextEmbedding):
     """Embed chunks in batches and upsert into Qdrant."""
     total = len(chunks)
     for start in range(0, total, BATCH_SIZE):
         batch = chunks[start : start + BATCH_SIZE]
         texts = [c["text"] for c in batch]
-        vectors = embedder.embed_documents(texts)
+        vectors = [v.tolist() for v in embedder.embed(texts)]
         points = [
             PointStruct(
                 id=start + i,
@@ -98,8 +98,8 @@ def main():
     pdf_path = find_pdf(PDF_PATH)
 
     print("Loading embedding model...")
-    embedder = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
-    vector_size = len(embedder.embed_query("test"))
+    embedder = TextEmbedding(model_name=EMBED_MODEL)
+    vector_size = len(next(embedder.embed(["test"])).tolist())
 
     print("Connecting to Qdrant Cloud...")
     client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, check_compatibility=False)

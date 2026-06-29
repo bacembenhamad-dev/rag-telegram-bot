@@ -78,7 +78,7 @@ The result is a friendly study assistant that never makes things up and always s
 | Layer | Technology | Why |
 |---|---|---|
 | **LLM** | Groq — `llama-3.3-70b-versatile` | Fast inference, generous free tier, open-weight model |
-| **Embeddings** | `sentence-transformers/all-MiniLM-L6-v2` | Runs locally, free, no API cost (384-dim) |
+| **Embeddings** | fastembed — `all-MiniLM-L6-v2` (ONNX) | Runs locally, free, no PyTorch — ~10x less RAM, fits Render's 512 MB free tier (384-dim) |
 | **Vector store** | Qdrant Cloud | Persistent, always-on, free 1 GB cluster |
 | **PDF parsing** | PyMuPDF (`fitz`) | Reliable text extraction from complex technical PDFs |
 | **RAG / orchestration** | LangChain | Glues retriever, prompt, and LLM together |
@@ -208,7 +208,7 @@ rag-telegram-bot/
 ```
 User message → Telegram → webhook → bot.py
     → RAGChain.answer(chat_id, question)
-        → embed question         (sentence-transformers, local)
+        → embed question         (fastembed / MiniLM, local)
         → search Qdrant          (top-5 relevant passages, score-filtered)
         → build prompt           (system + recent history + book context)
         → Groq · Llama 3.3 70B   (temperature 0.2, grounded answer)

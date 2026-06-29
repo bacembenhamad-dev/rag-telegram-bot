@@ -6,8 +6,8 @@ import os
 from collections import defaultdict
 
 from dotenv import load_dotenv
+from fastembed import TextEmbedding
 from langchain_groq import ChatGroq
-from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
 
 load_dotenv()
@@ -41,7 +41,8 @@ Book context:
 class RAGChain:
     def __init__(self):
         print("Loading embedding model...")
-        self._embedder = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+        # fastembed = ONNX runtime, no PyTorch — ~10x less RAM, fits Render's free tier.
+        self._embedder = TextEmbedding(model_name=EMBED_MODEL)
 
         print("Connecting to Qdrant...")
         self._qdrant = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, check_compatibility=False)
@@ -61,7 +62,8 @@ class RAGChain:
         self._history[chat_id] = []
 
     def _retrieve(self, query: str) -> list[dict]:
-        query_vector = self._embedder.embed_query(query)
+        # fastembed.embed() yields numpy arrays; take the first and convert to a list.
+        query_vector = next(self._embedder.embed([query])).tolist()
         results = self._qdrant.search(
             collection_name=COLLECTION_NAME,
             query_vector=query_vector,
