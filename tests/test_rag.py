@@ -11,7 +11,7 @@ import src.rag as rag_module
 from src.rag import RAGChain
 
 
-def make_rag(memory_window: int = 10) -> RAGChain:
+def make_rag() -> RAGChain:
     rag = RAGChain.__new__(RAGChain)
     rag._history = defaultdict(list)
     rag._llm = MagicMock()
@@ -53,6 +53,24 @@ def test_clear_history():
     assert rag._history[7]
     rag.clear_history(7)
     assert rag._history[7] == []
+
+
+def test_retrieve_uses_query_points_api():
+    """Guards against the qdrant-client 1.18 break: search() was removed in
+    favour of query_points(). This test fails if we regress to search()."""
+    rag = make_rag()
+    emb = MagicMock()
+    emb.tolist.return_value = [0.1, 0.2, 0.3]
+    rag._embedder.embed.return_value = iter([emb])
+
+    point = MagicMock(score=0.91)
+    point.payload = {"text": "chunk text", "page": 5}
+    rag._qdrant.query_points.return_value = MagicMock(points=[point])
+
+    docs = rag._retrieve("what is x?")
+
+    rag._qdrant.query_points.assert_called_once()
+    assert docs == [{"text": "chunk text", "page": 5, "score": 0.91}]
 
 
 def test_answer_returns_message_when_no_context(monkeypatch):

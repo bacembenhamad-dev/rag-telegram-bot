@@ -64,16 +64,17 @@ class RAGChain:
     def _retrieve(self, query: str) -> list[dict]:
         # fastembed.embed() yields numpy arrays; take the first and convert to a list.
         query_vector = next(self._embedder.embed([query])).tolist()
-        results = self._qdrant.search(
+        # query_points() is the current API — search() was removed in qdrant-client 1.18.
+        response = self._qdrant.query_points(
             collection_name=COLLECTION_NAME,
-            query_vector=query_vector,
+            query=query_vector,
             limit=TOP_K,
             score_threshold=SCORE_THRESHOLD,
             with_payload=True,
         )
         return [
-            {"text": r.payload["text"], "page": r.payload["page"], "score": r.score}
-            for r in results
+            {"text": p.payload["text"], "page": p.payload["page"], "score": p.score}
+            for p in response.points
         ]
 
     def _build_messages(self, history: list[dict], context: str, question: str) -> list[dict]:
