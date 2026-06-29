@@ -170,12 +170,12 @@ The suite (**21 tests**) covers retrieval/memory logic, source formatting, messa
 ## ☁️ Deploy to Render (free)
 
 1. Push this repository to GitHub.
-2. Go to [render.com](https://render.com) → **New → Web Service** → connect your repo. Render auto-detects `render.yaml`.
-3. In the service's **Environment** tab, add the secrets:
+2. On [render.com](https://render.com) → **New → Blueprint** → connect this repo. Render reads `render.yaml` and configures the service for you.
+3. When prompted, fill in the four secrets:
    `GROQ_API_KEY`, `TELEGRAM_BOT_TOKEN`, `QDRANT_URL`, `QDRANT_API_KEY`.
-4. After the first deploy, copy your Render URL (e.g. `https://your-app.onrender.com`), add it as `WEBHOOK_URL`, and **redeploy**.
+4. Click **Apply** and wait for the build.
 
-On startup the bot registers its webhook with Telegram automatically. A `/health` endpoint is exposed for uptime checks.
+That's it — no second deploy needed. The bot derives its public URL from Render's `RENDER_EXTERNAL_URL` automatically and registers the Telegram webhook on startup. A `/health` endpoint is exposed for uptime checks.
 
 > ⏳ Render's free tier sleeps after inactivity, so the first message after idle may take a few seconds to wake the service.
 

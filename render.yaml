@@ -17,8 +17,8 @@ services:
         sync: false
       - key: QDRANT_API_KEY
         sync: false
-      - key: WEBHOOK_URL
-        sync: false
+      # WEBHOOK_URL is derived from RENDER_EXTERNAL_URL automatically.
+      # Only set it manually if you use a custom domain.
       - key: COLLECTION_NAME
         value: ml_book
       - key: MEMORY_WINDOW

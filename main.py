@@ -6,7 +6,6 @@ Local dev (polling):  python main.py --local
 """
 
 import argparse
-import asyncio
 import logging
 import os
 
@@ -40,7 +39,15 @@ def run_webhook() -> None:
     from src.bot import build_application
     from src.rag import RAGChain
 
-    webhook_url = os.environ["WEBHOOK_URL"]
+    # Render injects RENDER_EXTERNAL_URL (the service's public HTTPS URL)
+    # automatically, so there's no need to hardcode it. WEBHOOK_URL overrides
+    # if you ever want to point at a custom domain.
+    webhook_url = os.getenv("WEBHOOK_URL") or os.getenv("RENDER_EXTERNAL_URL")
+    if not webhook_url:
+        raise RuntimeError(
+            "No webhook URL found. Set WEBHOOK_URL, or deploy on Render "
+            "(which provides RENDER_EXTERNAL_URL automatically)."
+        )
     token = os.environ["TELEGRAM_BOT_TOKEN"]
     port = int(os.getenv("PORT", "10000"))
 
