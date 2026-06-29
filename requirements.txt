@@ -1,0 +1,12 @@
+python-telegram-bot[webhooks]==21.9
+langchain==0.3.25
+langchain-groq==0.3.2
+langchain-community==0.3.24
+langchain-huggingface==0.1.2
+qdrant-client>=1.7.0
+sentence-transformers==3.4.1
+PyMuPDF==1.25.5
+python-dotenv==1.1.0
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+httpx==0.28.1

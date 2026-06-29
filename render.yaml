@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: rag-telegram-bot
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: COLLECTION_NAME
+        value: ml_book
+      - key: MEMORY_WINDOW
+        value: "10"

@@ -1,0 +1,19 @@
+# Secrets — never commit
+.env
+
+# The book PDF is copyrighted; users provide their own
+PDFs/*.pdf
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
