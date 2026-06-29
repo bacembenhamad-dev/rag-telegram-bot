@@ -11,6 +11,12 @@
 [![Tests](https://img.shields.io/badge/tests-21%20passing-brightgreen)](#-running-the-tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+<br/>
+
+<a href="https://t.me/ML_hands_on_bot">
+  <img src="https://img.shields.io/badge/🚀_Try_it_live-%40ML__hands__on__bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Try it live on Telegram">
+</a>
+
 </div>
 
 ---
